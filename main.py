@@ -49,4 +49,34 @@ model.const12 = pyo.Constraint(expr=model.a[4] + model.d[3] == model.b[4] + mode
 model.const13 = pyo.Constraint(expr=model.a[5] + model.d[4] == model.b[5] + model.d[5])
 model.const14 = pyo.Constraint(expr=model.d[5] == 0)
 
-solver = pyo.SolverFactory("glpk")
+solver = pyo.SolverFactory("glpk", executable="/usr/bin/glpsol")
+
+result = solver.solve(model)
+
+print("Solver's status:", result.solver.status)
+
+print("Solver's termination condition:", result.solver.termination_condition)
+
+print("\nOptimal Solution:")
+for i in model.i:
+    print(f"x{i} =", model.x[i]())
+
+print()
+
+for i in model.i:
+    print(f"y{i} =", model.y[i]())
+
+print()
+for i in model.i:
+    print(f"a{i} =", model.a[i]())
+print()
+for i in model.i:
+    print(f"b{i} =", model.b[i]())
+print()
+for i in model.i:
+    print(f"c{i} =", model.c[i]())
+print()
+for i in model.i:
+    print(f"d{i} =", model.d[i]())
+print()
+print("Objective function's value (z) =", model.obj())
