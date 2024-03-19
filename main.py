@@ -14,5 +14,39 @@ model.b = pyo.Var(model.i, domain=pyo.NonNegativeIntegers)
 model.c = pyo.Var(model.i, domain=pyo.NonNegativeIntegers)
 model.d = pyo.Var(model.i, domain=pyo.NonNegativeIntegers)
 
-model.obj = pyo.Objective(expr=200 * sum((model.x[i] + model.y[i]) for i in model.i), sense = pyo.minimize)
+model.obj = pyo.Objective(
+    expr=200 * sum((model.x[i] + model.y[i]) for i in model.i), sense=pyo.minimize
+)
 
+
+# * Constraints
+def const1_rule(model, i):
+    return model.a[i] <= model.x[i] * 40 * 4
+
+
+model.const1 = pyo.Constraint(model.i, rule=const1_rule)
+
+
+def const2_rule(model, i):
+    return model.b[i] <= model.y[i] * 40 * 6
+
+
+model.const2 = pyo.Constraint(model.i, rule=const2_rule)
+
+# * Preprocess Constraints
+model.const3 = pyo.Constraint(expr=model.d[1] == model.a[1] + model.c[1])
+model.const4 = pyo.Constraint(expr=model.d[2] + model.c[1] == model.a[2] + model.c[2])
+model.const5 = pyo.Constraint(expr=model.d[3] + model.c[2] == model.a[3] + model.c[3])
+model.const6 = pyo.Constraint(expr=model.d[4] + model.c[3] == model.a[4] + model.c[4])
+model.const7 = pyo.Constraint(expr=model.d[5] + model.c[4] == model.a[5] + model.c[5])
+model.const8 = pyo.Constraint(expr=model.c[5] == 0)
+
+# * Save Constraints
+model.const9 = pyo.Constraint(expr=model.a[1] == model.b[1] + model.d[1])
+model.const10 = pyo.Constraint(expr=model.a[2] + model.d[1] == model.b[2] + model.d[2])
+model.const11 = pyo.Constraint(expr=model.a[3] + model.d[2] == model.b[3] + model.d[3])
+model.const12 = pyo.Constraint(expr=model.a[4] + model.d[3] == model.b[4] + model.d[4])
+model.const13 = pyo.Constraint(expr=model.a[5] + model.d[4] == model.b[5] + model.d[5])
+model.const14 = pyo.Constraint(expr=model.d[5] == 0)
+
+solver = pyo.SolverFactory("glpk")
